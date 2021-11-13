@@ -1,7 +1,7 @@
-Class dc.Sample.PersonREST Extends Sample.REST.Base
+Class dc.sample.rest.PersonREST Extends dc.sample.rest.Base
 {
 
-Parameter Version = "1.0.6";
+Parameter Version = "1.0.0";
 
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
@@ -39,18 +39,21 @@ ClassMethod GetAllPersons() As %Status
 {
 
     #dim tSC As %Status = $$$OK
+    if '($ROLES["Reader") {
+        Set %response.Status = 403
+        return tSC }   
 
-    Set rset = ##class(Sample.Person).ExtentFunc()
+    Set rset = ##class(Person).ExtentFunc()
 
     Set %response.ContentType = ..#CONTENTTYPEJSON
     Write "["
     if rset.%Next() {
-        Set person = ##class(Sample.Person).%OpenId(rset.ID)    
+        Set person = ##class(Person).%OpenId(rset.ID)    
         Do person.%JSONExport()
     }
     While rset.%Next() {   
         Write ","
-        Set person = ##class(Sample.Person).%OpenId(rset.ID)    
+        Set person = ##class(Person).%OpenId(rset.ID)    
         Do person.%JSONExport()
     }
     Write "]"
@@ -62,12 +65,15 @@ ClassMethod GetPerson(id As %Integer) As %Status
 {
 	#dim tSC As %Status = $$$OK
     #dim e As %Exception.AbstractException
+    if '($ROLES["Reader") {
+        Set %response.Status = 403
+        return tSC }   
 
 
     #; Set the response header to plain text
     Set %response.ContentType = ..#CONTENTTYPEJSON
 
-    Set person = ##class(Sample.Person).%OpenId(id)
+    Set person = ##class(Person).%OpenId(id)
 
     If '$IsObject(person) Quit ..Http404()
 
@@ -81,7 +87,11 @@ ClassMethod CreatePerson() As %Status
 {
 	#dim tSC As %Status = $$$OK
     #dim e As %Exception.AbstractException
-    Set person = ##class(Sample.Person).%New()
+     if '($ROLES["Writer") {
+        Set %response.Status = 403
+        return tSC }   
+
+    Set person = ##class(Person).%New()
     Set data=%request.Content
 
 
@@ -101,7 +111,12 @@ ClassMethod UpdatePerson(id As %Integer) As %Status
 {
 	#dim tSC As %Status = $$$OK
     #dim e As %Exception.AbstractException
-    Set person = ##class(Sample.Person).%OpenId(id)
+    s ^AAA=$ROLES
+    if '($ROLES["Writer") {
+        Set %response.Status = 403
+        return tSC }   
+
+    Set person = ##class(Person).%OpenId(id)
     If '$IsObject(person) Return ..Http404()
     Set data=%request.Content
 
@@ -121,7 +136,7 @@ ClassMethod DeletePerson(id As %Integer) As %Status
 {
 	#dim tSC As %Status = $$$OK
     #dim e As %Exception.AbstractException
-    Set person = ##class(Sample.Person).%OpenId(id)
+    Set person = ##class(Person).%OpenId(id)
     If '$IsObject(person) Return ..Http404()
 
     $$$TOE(tSC,person.%DeleteId(id))
@@ -139,7 +154,7 @@ ClassMethod SwaggerSpec() As %Status
   Do swagger.info.%Remove("x-ISC_Namespace")
   Set swagger.basePath = "/crud"
   Set swagger.info.title = "InterSystems IRIS REST CRUD demo"
-  Set swagger.info.version = "0.1"
+  Set swagger.info.version = "1"
   Set swagger.host = "localhost:52773"
   Return ..%ProcessResult($$$OK, swagger)
 }

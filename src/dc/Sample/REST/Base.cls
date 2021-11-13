@@ -1,4 +1,4 @@
-Class Sample.REST.Base Extends %CSP.REST [ System = 3 ]
+Class dc.sample.rest.Base Extends %CSP.REST [ System = 3 ]
 {
 
 Parameter CHARSET = "utf-8";

@@ -1,24 +1,23 @@
-## intersystems-iris-docker-rest-template
+## dc-sample-rest-api
 This is a template of a REST API application built with ObjectScript in InterSystems IRIS.
-It also has OPEN API spec, 
-can be developed with Docker and VSCode,
-can ve deployed as ZPM module.
+It contains the example of unauthenticated and authenticated access to the persistent data via REST API.
+It demoes the creation of users, roles and how to grant the access.
 
 ## Prerequisites
 Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
 
 ## Installation with ZPM
 
-zpm:USER>install rest-api-template
+zpm:USER>install dc-sample-rest
 
-## Installation for development
+## Installation for development with Docker
 
 Create your repository from template.
 
 Clone/git pull the repo into any local directory e.g. like it is shown below (here I show all the examples related to this repository, but I assume you have your own derived from the template):
 
 ```
-$ git clone git@github.com:intersystems-community/objectscript-rest-docker-template.git
+$ git clone git@github.com:intersystems-community/secured-rest-api.git
 ```
 
 Open the terminal in this directory and run:
@@ -26,19 +25,38 @@ Open the terminal in this directory and run:
 ```
 $ docker-compose up -d --build
 ```
-
-or open the folder in VSCode and do the following:
-![rest](https://user-images.githubusercontent.com/2781759/78183327-63569800-7470-11ea-8561-c3b547ce9001.gif)
-
-
 ## How to Work With it
 
-This template creates /crud REST web-application on IRIS which implements 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations.
-These interface works with a sample persistent class Sample.Person.
+This template creates two REST API web Apps: unsecured /crudall with access from any user.
+ and /crud REST web-application with basic authentication. 
+ The REST API spec is the same and  implements 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations.
+These interface works with a sample persistent class dc.sample.rest.Person.
 
 Open http://localhost:52773/swagger-ui/index.html to test the REST API
 
-# Testing GET requests
+The template also creates:
+ * 10 random records in dc.sample.rest.Person
+ * two roles: Reader with right to read records from dc.sample.rest.Person and Writer with right to add and alter.
+ * two users: Bill with Reader role and John with Writer role.
+
+
+## Testing unsecure access
+
+UnknownUser that represents the unauthenticated access has the Reader role. And we can test unsecure access with /crudall web app.
+
+### Testin GET requests
+
+Open http://localhost:52773/crudall/persons/all to see the records from Person class in JSON, like this:
+
+We see them because /crudall doesn't demand authentication according to [this line in ZPM module]()
+
+
+
+# Testing basic authentication
+
+
+
+
 
 To test GET you need to have some data. You can create it with POST request (see below), or you can create some fake testing data. to do that open IRIS terminal or web terminal on /localhost:52773/terminal/  and call:
 
