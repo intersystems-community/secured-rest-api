@@ -111,7 +111,6 @@ ClassMethod UpdatePerson(id As %Integer) As %Status
 {
 	#dim tSC As %Status = $$$OK
     #dim e As %Exception.AbstractException
-    s ^AAA=$ROLES
     if '($ROLES["Writer") {
         Set %response.Status = 403
         return tSC }   
