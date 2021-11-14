@@ -27,125 +27,48 @@ $ docker-compose up -d --build
 ```
 ## How to Work With it
 
-This template creates two REST API web Apps: unsecured /crudall with access from any user.
- and /crud REST web-application with basic authentication. 
- The REST API spec is the same and  implements 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations.
-These interface works with a sample persistent class dc.sample.rest.Person.
+The template creates two REST API web Apps: 
+1. unsecured /crudall with access from any user.
+2. and /crud REST web-application with basic authentication. 
+ Both REST API spec the same, have the same class-dispatcher and implement 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations to read, write an delete from the database.
+These interface work with a sample persistent class dc.sample.rest.Person.
 
-Open http://localhost:52773/swagger-ui/index.html to test the REST API
+Open http://localhost:52773/swagger-ui/index.html to discover and test the REST API
 
 The template also creates:
  * 10 random records in dc.sample.rest.Person
  * two roles: Reader with right to read records from dc.sample.rest.Person and Writer with right to add and alter.
  * two users: Bill with Reader role and John with Writer role.
 
-
 ## Testing unsecure access
 
 UnknownUser that represents the unauthenticated access has the Reader role. And we can test unsecure access with /crudall web app.
 
-### Testin GET requests
+### Testing GET requests
 
 Open http://localhost:52773/crudall/persons/all to see the records from Person class in JSON, like this:
 
-We see them because /crudall doesn't demand authentication according to [this line in ZPM module]()
+We see them because /crudall doesn't demand authentication according to [this line in ZPM module](https://github.com/evshvarov/secured-rest-api/blob/master/module.xml#L38)
+
+and thus the /crudall registers sign in of a UnknownUser which has a role Reader [assigned in Security class](https://github.com/evshvarov/secured-rest-api/blob/master/src/dc/sample/rest/Security.cls#L48).
+
+## Testing Secure access
+
+Secured access in this demo expressed via [deploying](https://github.com/evshvarov/secured-rest-api/blob/master/src/dc/sample/rest/Security.cls#L8) of two users Bill and John and Reader and Writer roles for the data access regulation.
+The regulation is implemented via role checking in the REST-API implementation calls: e.g. here for [GET](https://github.com/evshvarov/secured-rest-api/blob/master/src/dc/sample/rest/PersonREST.cls#L42) and [PUT](https://github.com/evshvarov/secured-rest-api/blob/master/src/dc/sample/rest/PersonREST.cls#115) calls.
+
+Open http://localhost:52773/crud/persons/all. You'll be prompted for the basic authenticatoin. Sign in with user Bill with ChangeMe password, that has Reader role. And you'll see the data as the Reader role is assigned to user Bill.
+Check also in another window or via request in Postman that if you sign in with user John you'll get 403 error back (Unauthorised access) as user John doesn't have role Reader.
+
+PUT and POST requests can be tested on a http://localhost:52773/crud/persons/ call which we can test e.g. via Postman. The [postman collection](https://github.com/evshvarov/secured-rest-api/blob/master/secured%20rest-api.postman_collection.json) with calls can be found in the repo.
+Try the Update Person PUT call that will change the name of the first record to John Doe and will perform the call with Basic Authentication and John as a user.
+If you change the user to Bill you'll get 403 response.
 
 
+## Next Steps
 
-# Testing basic authentication
+Next steps for these demo could be the representation of API map in Open API (swagger) standard and implementation if a Bearer Authentication
+## Collaboration  
 
+Pull requests are very wellcome!
 
-
-
-
-To test GET you need to have some data. You can create it with POST request (see below), or you can create some fake testing data. to do that open IRIS terminal or web terminal on /localhost:52773/terminal/  and call:
-
-```
-USER>do ##class(Sample.Person).AddTestData(10)
-```
-This will create 10 random records in Sample.Person class.
-
-
-You can get swagger Open API 2.0 documentation on:
-```
-localhost:yourport/_spec
-```
-
-This REST API exposes two GET requests: all the data and one record.
-To get all the data in JSON call:
-
-```
-localhost:52773/crud/persons/all
-```
-
-To request the data for a particular record provide the id in GET request like 'localhost:52773/crud/persons/id' . E.g.:
-
-```
-localhost:52773/crud/persons/1
-```
-
-This will return JSON data for the person with ID=1, something like that:
-
-```
-{"Name":"Elon Mask","Title":"CEO","Company":"Tesla","Phone":"123-123-1233","DOB":"1982-01-19"}
-```
-
-# Testing POST request
-
-Create a POST request e.g. in Postman with raw data in JSON. e.g.
-
-```
-{"Name":"Elon Mask","Title":"CEO","Company":"Tesla","Phone":"123-123-1233","DOB":"1982-01-19"}
-```
-
-Adjust the authorisation if needed - it is basic for container with default login and password for IRIR Community edition container
-
-and send the POST request to localhost:52773/crud/persons/
-
-This will create a record in Sample.Person class of IRIS.
-
-# Testing PUT request
-
-PUT request could be used to update the records. This needs to send the similar JSON as in POST request above supplying the id of the updated record in URL.
-E.g. we want to change the record with id=5. Prepare in Postman the JSON in raw like following:
-
-```
-{"Name":"Jeff Besos","Title":"CEO","Company":"Amazon","Phone":"123-123-1233","DOB":"1982-01-19"}
-```
-
-and send the put request to:
-```
-localhost:52773/crud/persons/5
-```
-
-# Testing DELETE request
-
-For delete request this REST API expects only the id of the record to delete. E.g. if the id=5 the following DELETE call will delete the record:
-
-```
-localhost:52773/crud/persons/5
-```
-
-## How to start coding
-This repository is ready to code in VSCode with ObjectScript plugin.
-Install [VSCode](https://code.visualstudio.com/) and [ObjectScript](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript) plugin and open the folder in VSCode.
-Open /src/cls/PackageSample/ObjectScript.cls class and try to make changes - it will be compiled in running IRIS docker container.
-
-Feel free to delete PackageSample folder and place your ObjectScript classes in a form
-/src/cls/Package/Classname.cls
-
-The script in Installer.cls will import everything you place under /src/cls into IRIS.
-
-## What's insde the repo
-
-# Dockerfile
-
-The simplest dockerfile to start IRIS and load ObjectScript from /src/cls folder
-Use the related docker-compose.yml to easily setup additional parametes like port number and where you map keys and host folders.
-
-# .vscode/settings.json
-
-Settings file to let you immedietly code in VSCode with [VSCode ObjectScript plugin](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript))
-
-# .vscode/launch.json
-Config file if you want to debug with VSCode ObjectScript
