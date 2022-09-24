@@ -1,4 +1,6 @@
 ## dc-sample-rest-api
+[![Quality Gate Status](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Fsecured-rest-api&metric=alert_status)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Fsecured-rest-api 
+
 This is a template of a REST API application built with ObjectScript in InterSystems IRIS.
 It contains the example of unauthenticated and authenticated access to the persistent data via REST API.
 It demoes the creation of users, roles and how to grant the access.
