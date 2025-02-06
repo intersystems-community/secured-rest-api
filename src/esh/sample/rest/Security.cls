@@ -1,17 +1,30 @@
 /// Class to deploy roles and users
-Class dc.sample.rest.Security
+Class esh.sample.rest.Security
 {
 
 /// Create users
 ClassMethod CreateUsers() As %Status
 {
     Set sc = $$$OK
-    // 
-    &sql(CREATE USER Bill IDENTIFY BY ChangeMe)
-    if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
+    set ns=$ZNSPACE
+    zn "%SYS"
+    try {
 
-    &sql(CREATE USER John IDENTIFY BY ChangeMe)
-    if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
+        if '##class(Security.Users).Exists("Bill") {
+        //
+            &sql(CREATE USER Bill IDENTIFY BY ChangeMe)
+            if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
+        }
+        if '##class(Security.Users).Exists("John") {
+        &sql(CREATE USER John IDENTIFY BY ChangeMe)
+        if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
+        }
+    }
+    catch e {
+        set sc=e.AsStatus()
+ 	    do e.Log()
+    }
+    set $ZNSPACE=ns
 
     Return sc
 }
@@ -23,14 +36,14 @@ ClassMethod CreateRoles() As %Status
     &sql(CREATE ROLE Writer)
     if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
 
-    &sql(GRANT UPDATE,INSERT ON dc_sample_rest.Person TO writer)
+    &sql(GRANT UPDATE,INSERT ON esh_sample_rest.Person TO writer)
     if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
 
 
     &sql(CREATE ROLE Reader)
     if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
 
-    &sql(GRANT SELECT ON dc_sample_rest.Person TO Reader)
+    &sql(GRANT SELECT ON esh_sample_rest.Person TO Reader)
     if SQLCODE < 0 throw ##class(%Exception.SQL).CreateFromSQLCODE(SQLCODE,%msg)
 
     Return sc

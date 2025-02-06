@@ -1,4 +1,4 @@
-Class dc.sample.rest.PersonREST Extends dc.sample.rest.Base
+Class esh.sample.rest.PersonREST Extends esh.sample.rest.Base
 {
 
 Parameter Version = "1.0.0";
@@ -41,19 +41,19 @@ ClassMethod GetAllPersons() As %Status
     #dim tSC As %Status = $$$OK
     if '($ROLES["Reader") {
         Set %response.Status = 403
-        return tSC }   
+        return tSC }
 
     Set rset = ##class(Person).ExtentFunc()
 
     Set %response.ContentType = ..#CONTENTTYPEJSON
     Write "["
     if rset.%Next() {
-        Set person = ##class(Person).%OpenId(rset.ID)    
+        Set person = ##class(Person).%OpenId(rset.ID)
         Do person.%JSONExport()
     }
-    While rset.%Next() {   
+    While rset.%Next() {
         Write ","
-        Set person = ##class(Person).%OpenId(rset.ID)    
+        Set person = ##class(Person).%OpenId(rset.ID)
         Do person.%JSONExport()
     }
     Write "]"
@@ -67,7 +67,7 @@ ClassMethod GetPerson(id As %Integer) As %Status
     #dim e As %Exception.AbstractException
     if '($ROLES["Reader") {
         Set %response.Status = 403
-        return tSC }   
+        return tSC }
 
 
     #; Set the response header to plain text
@@ -89,7 +89,7 @@ ClassMethod CreatePerson() As %Status
     #dim e As %Exception.AbstractException
      if '($ROLES["Writer") {
         Set %response.Status = 403
-        return tSC }   
+        return tSC }
 
     Set person = ##class(Person).%New()
     Set data=%request.Content
@@ -113,7 +113,7 @@ ClassMethod UpdatePerson(id As %Integer) As %Status
     #dim e As %Exception.AbstractException
     if '($ROLES["Writer") {
         Set %response.Status = 403
-        return tSC }   
+        return tSC }
 
     Set person = ##class(Person).%OpenId(id)
     If '$IsObject(person) Return ..Http404()

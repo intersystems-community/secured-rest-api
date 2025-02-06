@@ -2,20 +2,20 @@ ARG IMAGE=intersystemsdc/iris-community:2020.3.0.221.0-zpm
 ARG IMAGE=intersystemsdc/iris-community:2020.4.0.524.0-zpm
 ARG IMAGE=intersystemsdc/iris-community:2021.1.0.215.3-zpm
 ARG IMAGE=intersystemsdc/iris-community:2021.2.0.651.0-zpm
-ARG IMAGE=intersystemsdc/iris-community
 ARG IMAGE=intersystemsdc/iris-community:preview
+ARG IMAGE=intersystemsdc/iris-community
 FROM $IMAGE
 
-USER root   
-        
-WORKDIR /opt/irisapp
-RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
-USER ${ISC_PACKAGE_MGRUSER}
+WORKDIR /home/irisowner/dev
 
-COPY  src src
-COPY module.xml module.xml
-COPY iris.script /tmp/iris.script
+## install git
+## USER root
+##RUN apt update && apt-get -y install git
+##USER ${ISC_PACKAGE_MGRUSER}
 
-RUN iris start IRIS \
-	&& iris session IRIS < /tmp/iris.script \
-    && iris stop IRIS quietly
+## Embedded Python environment
+
+RUN --mount=type=bind,src=.,dst=. \
+    iris start IRIS && \
+	iris session IRIS < iris.script && \
+    iris stop IRIS quietly

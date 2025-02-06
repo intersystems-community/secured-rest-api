@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="dc-sample-rest.ZPM">
+  <Document name="esh-sample-rest.ZPM">
     <Module>
-      <Dependencies>
-        <ModuleReference>
-          <Name>swagger-ui</Name>
-          <Version>1.*.5</Version>
-        </ModuleReference>
-      </Dependencies>
       <Description>And example of a secured REST API deployment with Roles, Users and Access management</Description>
-      <Name>dc-sample-rest</Name>
+      <Name>esh-sample-rest</Name>
       <Version>1.0.1</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
-      <Resource Name="dc.sample.rest.PKG"/>
-      <Invoke Class="dc.sample.rest.Person" Method="AddTestData"></Invoke>
-      <Invoke Class="dc.sample.rest.Security" Method="CreateUsers"></Invoke>
-      <Invoke Class="dc.sample.rest.Security" Method="CreateRoles"></Invoke>
-      <Invoke Class="dc.sample.rest.Security" Method="GrantRoles"></Invoke>
+      <Resource Name="esh.sample.rest.PKG"/>
+      <Invoke Class="esh.sample.rest.Person" Method="AddTestData"></Invoke>
+      <Invoke Class="esh.sample.rest.Security" Method="CreateUsers"></Invoke>
+      <Invoke Class="esh.sample.rest.Security" Method="CreateRoles"></Invoke>
+      <Invoke Class="esh.sample.rest.Security" Method="GrantRoles"></Invoke>
 
-       <CSPApplication 
+       <CSPApplication
         Url="/crud"
-        DispatchClass="dc.sample.rest.PersonREST"
+        DispatchClass="esh.sample.rest.PersonREST"
         MatchRoles=":{$dbrole}"
         PasswordAuthEnabled="1"
         UnauthenticatedEnabled="0"
@@ -30,9 +24,9 @@
         CookiePath="/crud"
 
        />
-       <CSPApplication 
+       <CSPApplication
         Url="/crudall"
-        DispatchClass="dc.sample.rest.PersonREST"
+        DispatchClass="esh.sample.rest.PersonREST"
         MatchRoles=":{$dbrole}"
         PasswordAuthEnabled="0"
         UnauthenticatedEnabled="1"
@@ -41,6 +35,6 @@
         CookiePath="/crudall"
        />
     </Module>
-    
+
   </Document>
 </Export>

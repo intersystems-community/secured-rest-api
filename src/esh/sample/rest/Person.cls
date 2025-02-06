@@ -1,4 +1,4 @@
-Class dc.sample.rest.Person Extends (%Persistent, %JSON.Adaptor, %Populate)
+Class esh.sample.rest.Person Extends (%Persistent, %JSON.Adaptor, %Populate)
 {
 
 Property Name As %VarString;
@@ -41,11 +41,11 @@ Storage Default
 <Value>DOB</Value>
 </Value>
 </Data>
-<DataLocation>^dc.sample.rest.PersonD</DataLocation>
+<DataLocation>^esh.sample.rest.PersonD</DataLocation>
 <DefaultData>PersonDefaultData</DefaultData>
-<IdLocation>^dc.sample.rest.PersonD</IdLocation>
-<IndexLocation>^dc.sample.rest.PersonI</IndexLocation>
-<StreamLocation>^dc.sample.rest.PersonS</StreamLocation>
+<IdLocation>^esh.sample.rest.PersonD</IdLocation>
+<IndexLocation>^esh.sample.rest.PersonI</IndexLocation>
+<StreamLocation>^esh.sample.rest.PersonS</StreamLocation>
 <Type>%Storage.Persistent</Type>
 }
 

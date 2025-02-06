@@ -29,17 +29,17 @@ $ docker-compose up -d --build
 ```
 ## How to Work With it
 
-The template creates two REST API web Apps: 
+The template creates two REST API web Apps:
 1. unsecured /crudall with access from any user.
-2. and /crud REST web-application with basic authentication. 
+2. and /crud REST web-application with basic authentication.
  Both REST API spec the same, have the same class-dispatcher and implement 4 types of communication: GET, POST, PUT and DELETE aka CRUD operations to read, write an delete from the database.
-These interface work with a sample persistent class dc.sample.rest.Person.
+These interface work with a sample persistent class esh.sample.rest.Person.
 
 Open http://localhost:52773/swagger-ui/index.html to discover and test the REST API
 
 The template also creates:
- * 10 random records in dc.sample.rest.Person
- * two roles: Reader with right to read records from dc.sample.rest.Person and Writer with right to add and alter.
+ * 10 random records in esh.sample.rest.Person
+ * two roles: Reader with right to read records from esh.sample.rest.Person and Writer with right to add and alter.
  * two users: Bill with Reader role and John with Writer role.
 
 ## Testing unsecure access
@@ -70,7 +70,7 @@ If you change the user to Bill you'll get 403 response.
 ## Next Steps
 
 Next steps for these demo could be the representation of API map in Open API (swagger) standard and implementation if a Bearer Authentication
-## Collaboration  
+## Collaboration
 
 Pull requests are very wellcome!
 
